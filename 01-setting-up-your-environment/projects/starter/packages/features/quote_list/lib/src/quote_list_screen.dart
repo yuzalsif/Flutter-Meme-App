@@ -1,4 +1,4 @@
-import 'package:component_library/component_library.dart';
+import 'package:component_library/component_library.dart' as component_library;
 import 'package:domain_models/domain_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,7 +99,7 @@ class _QuoteListViewState extends State<QuoteListView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = WonderTheme.of(context);
+    final theme = component_library.WonderTheme.of(context);
     final l10n = QuoteListLocalizations.of(context);
     return BlocListener<QuoteListBloc, QuoteListState>(
       listener: (context, state) {
@@ -121,8 +121,8 @@ class _QuoteListViewState extends State<QuoteListView> {
         } else if (state.favoriteToggleError != null) {
           final snackBar =
               state.favoriteToggleError is UserAuthenticationRequiredException
-                  ? const AuthenticationRequiredErrorSnackBar()
-                  : const GenericErrorSnackBar();
+                  ? const component_library.AuthenticationRequiredErrorSnackBar()
+                  : const component_library.GenericErrorSnackBar();
 
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -133,7 +133,7 @@ class _QuoteListViewState extends State<QuoteListView> {
 
         _pagingController.value = state.toPagingState();
       },
-      child: StyledStatusBar.dark(
+      child: component_library.StyledStatusBar.dark(
         child: SafeArea(
           child: Scaffold(
             body: GestureDetector(
