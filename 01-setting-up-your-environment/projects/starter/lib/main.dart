@@ -140,6 +140,7 @@ class _WonderWordsState extends State<WonderWords> {
           lightTheme: _lightTheme,
           darkTheme: _darkTheme,
           child: MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
