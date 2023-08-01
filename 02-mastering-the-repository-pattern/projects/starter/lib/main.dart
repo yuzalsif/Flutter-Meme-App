@@ -76,10 +76,10 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
-  late final _quoteRepository = QuoteRepository(
+  late final QuoteRepository _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
@@ -88,7 +88,7 @@ class _WonderWordsState extends State<WonderWords> {
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
       ScreenViewObserver(
         analyticsService: _analyticsService,
