@@ -12,18 +12,18 @@ class QuoteDetailsInProgess extends QuoteDetailsState {
 }
 
 class QuoteDetailsSuccess extends QuoteDetailsState {
-  const QuoteDetailsSuccess({
+  QuoteDetailsSuccess({
     required this.quote,
-    // TODO: Recieve new property
+    this.quoteUpdateError
   });
 
   final Quote quote;
-  // TODO: Add new property
+  dynamic quoteUpdateError;
 
   @override
   List<Object?> get props => [
         quote,
-        // TODO: List new property 
+        quoteUpdateError
       ];
 }
 

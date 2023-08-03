@@ -26,9 +26,13 @@ class QuoteDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QuoteDetailsView(
-      onAuthenticationError: onAuthenticationError,
-      shareableLinkGenerator: shareableLinkGenerator,
+    return BlocProvider<QuoteDetailsCubit>(
+      create: (_) =>
+          QuoteDetailsCubit(quoteId: quoteId, quoteRepository: quoteRepository),
+      child: QuoteDetailsView(
+        onAuthenticationError: onAuthenticationError,
+        shareableLinkGenerator: shareableLinkGenerator,
+      ),
     );
   }
 }
@@ -46,9 +50,24 @@ class QuoteDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledStatusBar.dark(child:
-        BlocBuilder<QuoteDetailsCubit, QuoteDetailsState>(
-            builder: (context, state) {
+    return StyledStatusBar.dark(
+        child: BlocConsumer<QuoteDetailsCubit, QuoteDetailsState>(
+            listener: (context, state) {
+      final quoteUpdateError =
+          state is QuoteDetailsSuccess ? state.quoteUpdateError : null;
+      if (quoteUpdateError != null) {
+        final snackBar = quoteUpdateError is UserAuthenticationRequiredException
+            ? const AuthenticationRequiredErrorSnackBar()
+            : const GenericErrorSnackBar();
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
+
+        if (quoteUpdateError is UserAuthenticationRequiredException) {
+          onAuthenticationError();
+        }
+      }
+    }, builder: (context, state) {
       return WillPopScope(
         onWillPop: () async {
           final displayedQuote =
@@ -74,11 +93,11 @@ class QuoteDetailsView extends StatelessWidget {
                     )
                   : state is QuoteDetailsFailure
                       ? ExceptionIndicator(
-                        onTryAgain: () {
-                          final cubit = context.read<QuoteDetailsCubit>();
-                          cubit.refetch();
-                        },
-                      )
+                          onTryAgain: () {
+                            final cubit = context.read<QuoteDetailsCubit>();
+                            cubit.refetch();
+                          },
+                        )
                       : const CenteredCircularProgressIndicator(),
             ),
           ),

@@ -40,22 +40,85 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   }
 
   void upvoteQuote() async {
-    // TODO: Add a body to upvoteQuote()
+    try {
+      final updateQuote = await quoteRepository.upvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updateQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(QuoteDetailsSuccess(
+          quote: lastState.quote,
+          quoteUpdateError: error,
+        ));
+      }
+    }
   }
 
   void downvoteQuote() async {
-    // TODO: Add a body to downvote()
+    try {
+      final updateQuote = await quoteRepository.downvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updateQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 
   void unvoteQuote() async {
-    // TODO: Add a body to unvote()
+    try {
+      final updateQuote = await quoteRepository.unvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updateQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 
   void favoriteQuote() async {
-    // TODO: Add a body to favorite()
+    try {
+      final updateQuote = await quoteRepository.favoriteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updateQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 
   void unfavoriteQuote() async {
-    // TODO: Add a body to unfavorite()
+    try {
+      final updateQuote = await quoteRepository.unfavoriteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updateQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 }
