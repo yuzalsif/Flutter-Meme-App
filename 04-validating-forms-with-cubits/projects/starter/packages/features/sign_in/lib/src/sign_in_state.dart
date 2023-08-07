@@ -4,7 +4,7 @@ class SignInState extends Equatable {
   const SignInState({
     this.email = const Email.unvalidated(),
     this.password = const Password.unvalidated(),
-    this.submissionStatus,
+    this.submissionStatus = SubmissionStatus.idle,
   });
 
   final Email email;
