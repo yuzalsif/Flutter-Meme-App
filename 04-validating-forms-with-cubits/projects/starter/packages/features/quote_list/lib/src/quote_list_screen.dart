@@ -1,4 +1,5 @@
 import 'package:component_library/component_library.dart';
+import 'package:component_library/component_library.dart' as sb;
 import 'package:domain_models/domain_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,7 +145,7 @@ class _QuoteListViewState extends State<QuoteListView> {
                     padding: EdgeInsets.symmetric(
                       horizontal: theme.screenMargin,
                     ),
-                    child: SearchBar(
+                    child: sb.SearchBar(
                       controller: _searchBarController,
                     ),
                   ),
