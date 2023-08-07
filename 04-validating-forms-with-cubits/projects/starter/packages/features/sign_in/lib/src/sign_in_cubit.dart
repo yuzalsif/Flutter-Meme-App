@@ -35,28 +35,58 @@ class SignInCubit extends Cubit<SignInState> {
   }
 
   void onEmailUnfocused() {
-      final previousScreenState = state;
-      final previousEmailState = previousScreenState.email;
-      final previousEmailValue = previousEmailState.value;
+    final previousScreenState = state;
+    final previousEmailState = previousScreenState.email;
+    final previousEmailValue = previousEmailState.value;
 
-      final newEmailState = Email.validated(
-        previousEmailValue,
-      );
-      final newScreenState = previousScreenState.copyWith(
-        email: newEmailState,
-      );
-      emit(newScreenState);
-    }
+    final newEmailState = Email.validated(
+      previousEmailValue,
+    );
+    final newScreenState = previousScreenState.copyWith(
+      email: newEmailState,
+    );
+    emit(newScreenState);
+  }
 
-    void onPasswordChanged(String newValue){
-      // TODO: Handle the user changing the value of the password
-    }
+  void onPasswordChanged(String newValue) {
+    final previousScreenState = state;
 
-    void onPasswordUnfocused() {
-      // TODO: Handle the user taking the focus out if the password field
-    }
+    final previousPasswordState = previousScreenState.password;
 
-    void onSubmit() async {
-      // TODO: Handle the submit button's tap.
-    }
+    final shouldValidate = previousPasswordState.invalid;
+
+    final newPasswordState = shouldValidate
+        ? Password.validated(
+            newValue,
+          )
+        : Password.unvalidated(
+            newValue,
+          );
+
+    final newScreenState = state.copyWith(
+      password: newPasswordState,
+    );
+
+    emit(newScreenState);
+  }
+
+  void onPasswordUnfocused() {
+    final previousScreenState = state;
+    final previousPasswordState = previousScreenState.password;
+
+    final previousPasswordValue = previousPasswordState.value;
+
+    final newPasswordState = Password.validated(
+      previousPasswordValue,
+    );
+
+    final newScreenState = previousScreenState.copyWith(
+      password: newPasswordState,
+    );
+    emit(newScreenState);
+  }
+
+  void onSubmit() async {
+    // TODO: Handle the submit button's tap.
+  }
 }
