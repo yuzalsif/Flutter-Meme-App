@@ -105,13 +105,13 @@ class _SignInFormState extends State<_SignInForm> {
     super.initState();
 
     final cubit = context.read<SignInCubit>();
-    _emailFocusNode.addListener(() { 
-      if(!_emailFocusNode.hasFocus){
+    _emailFocusNode.addListener(() {
+      if (!_emailFocusNode.hasFocus) {
         cubit.onEmailUnfocused();
       }
     });
-    _passwordFocusNode.addListener(() { 
-      if(!_passwordFocusNode.hasFocus){
+    _passwordFocusNode.addListener(() {
+      if (!_passwordFocusNode.hasFocus) {
         cubit.onPasswordUnfocused();
       }
     });
@@ -135,7 +135,8 @@ class _SignInFormState extends State<_SignInForm> {
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
-        // TODO: Check for errors in the password state.
+        final passwordError =
+            state.password.invalid ? state.password.error : null;
         final isSubmissionInProgress = false;
 
         final cubit = context.read<SignInCubit>();
@@ -164,7 +165,7 @@ class _SignInFormState extends State<_SignInForm> {
             ),
             TextField(
               focusNode: _passwordFocusNode,
-              // TODO: Forward password change events to the Cubit.
+              onChanged: cubit.onPasswordChanged,
               obscureText: true,
               // TODO: Forward the onEditingComplete to the Cubit.
               decoration: InputDecoration(
@@ -173,7 +174,11 @@ class _SignInFormState extends State<_SignInForm> {
                 ),
                 enabled: !isSubmissionInProgress,
                 labelText: l10n.passwordTextFieldLabel,
-                // TODO: Display the password validation error if any.
+                errorText: passwordError == null
+                    ? null
+                    : (passwordError == PasswordValidationError.empty
+                        ? l10n.passwordTextFieldEmptyErrorMessage
+                        : l10n.passwordTextFieldInvalidErrorMessage),
               ),
             ),
             TextButton(
