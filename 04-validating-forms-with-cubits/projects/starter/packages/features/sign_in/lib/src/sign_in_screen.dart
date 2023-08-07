@@ -97,7 +97,32 @@ class _SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<_SignInForm> {
-  // TODO: Create the FocusNodes.
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    final cubit = context.read<SignInCubit>();
+    _emailFocusNode.addListener(() { 
+      if(!_emailFocusNode.hasFocus){
+        cubit.onEmailUnfocused();
+      }
+    });
+    _passwordFocusNode.addListener(() { 
+      if(!_passwordFocusNode.hasFocus){
+        cubit.onPasswordUnfocused();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
