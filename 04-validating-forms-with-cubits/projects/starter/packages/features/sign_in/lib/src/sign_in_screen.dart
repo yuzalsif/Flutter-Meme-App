@@ -142,7 +142,7 @@ class _SignInFormState extends State<_SignInForm> {
         return Column(
           children: <Widget>[
             TextField(
-              // TODO: Attach _emailFocusNode.
+              focusNode: _emailFocusNode,
               onChanged: cubit.onEmailChanged,
               textInputAction: TextInputAction.next,
               autocorrect: false,
@@ -163,7 +163,7 @@ class _SignInFormState extends State<_SignInForm> {
               height: Spacing.large,
             ),
             TextField(
-              // TODO: Attach _passwordFocusNode.
+              focusNode: _passwordFocusNode,
               // TODO: Forward password change events to the Cubit.
               obscureText: true,
               // TODO: Forward the onEditingComplete to the Cubit.
