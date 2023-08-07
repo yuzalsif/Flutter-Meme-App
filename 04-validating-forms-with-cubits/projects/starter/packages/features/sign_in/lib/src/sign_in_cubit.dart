@@ -98,5 +98,25 @@ class SignInCubit extends Cubit<SignInState> {
         submissionStatus: isFormValid ? SubmissionStatus.inProgress : null);
 
     emit(newState);
+
+    if (isFormValid) {
+      try {
+        await userRepository.signIn(
+          email.value,
+          password.value,
+        );
+
+        final newState =
+            state.copyWith(submissionStatus: SubmissionStatus.success);
+        emit(newState);
+      } catch (error) {
+        final newState = state.copyWith(
+          submissionStatus: error is InvalidCredentialsException
+              ? SubmissionStatus.invalidCredentialsError
+              : SubmissionStatus.genericError,
+        );
+        emit(newState);
+      }
+    }
   }
 }
