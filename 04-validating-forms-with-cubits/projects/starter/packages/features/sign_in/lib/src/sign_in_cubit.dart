@@ -87,6 +87,16 @@ class SignInCubit extends Cubit<SignInState> {
   }
 
   void onSubmit() async {
-    // TODO: Handle the submit button's tap.
+    final email = Email.validated(state.email.value);
+    final password = Password.validated(state.password.value);
+
+    final isFormValid = Formz.validate([email, password]).isValid;
+
+    final newState = state.copyWith(
+        email: email,
+        password: password,
+        submissionStatus: isFormValid ? SubmissionStatus.inProgress : null);
+
+    emit(newState);
   }
 }
