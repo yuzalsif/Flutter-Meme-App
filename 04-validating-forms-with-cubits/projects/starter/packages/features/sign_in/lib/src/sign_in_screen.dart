@@ -131,13 +131,34 @@ class _SignInFormState extends State<_SignInForm> {
       listenWhen: (oldState, newState) =>
           oldState.submissionStatus != newState.submissionStatus,
       listener: (context, state) {
-        // TODO: Execute one-off actions based on state changes.
+        if (state.submissionStatus == SubmissionStatus.success) {
+          widget.onSignInSuccess();
+          return;
+        }
+
+        final hasSubmissionError = state.submissionStatus ==
+                SubmissionStatus.genericError ||
+            state.submissionStatus == SubmissionStatus.invalidCredentialsError;
+
+        if (hasSubmissionError) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(state.submissionStatus ==
+                    SubmissionStatus.invalidCredentialsError
+                ? SnackBar(
+                    content: Text(
+                      l10n.invalidCredentialsErrorMessage,
+                    ),
+                  )
+                : const GenericErrorSnackBar());
+        }
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
         final passwordError =
             state.password.invalid ? state.password.error : null;
-        final isSubmissionInProgress = false;
+        final isSubmissionInProgress =
+            state.submissionStatus == SubmissionStatus.inProgress;
 
         final cubit = context.read<SignInCubit>();
         return Column(
