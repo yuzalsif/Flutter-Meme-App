@@ -36,16 +36,19 @@ class SignInCubit extends Cubit<SignInState> {
 
   void onEmailUnfocused() {
     final previousScreenState = state;
-    final previousEmailState = previousScreenState.email;
-    final previousEmailValue = previousEmailState.value;
 
-    final newEmailState = Email.validated(
-      previousEmailValue,
-    );
-    final newScreenState = previousScreenState.copyWith(
-      email: newEmailState,
-    );
-    emit(newScreenState);
+    if (state.submissionStatus == SubmissionStatus.inProgress) {
+    } else {
+      final previousEmailState = previousScreenState.email;
+      final previousEmailValue = previousEmailState.value;
+      final newEmailState = Email.validated(
+        previousEmailValue,
+      );
+      final newScreenState = previousScreenState.copyWith(
+        email: newEmailState,
+      );
+      emit(newScreenState);
+    }
   }
 
   void onPasswordChanged(String newValue) {
@@ -72,18 +75,21 @@ class SignInCubit extends Cubit<SignInState> {
 
   void onPasswordUnfocused() {
     final previousScreenState = state;
-    final previousPasswordState = previousScreenState.password;
 
-    final previousPasswordValue = previousPasswordState.value;
+    if (state.submissionStatus == SubmissionStatus.inProgress) {
+    } else {
+      final previousPasswordState = previousScreenState.password;
 
-    final newPasswordState = Password.validated(
-      previousPasswordValue,
-    );
+      final previousPasswordValue = previousPasswordState.value;
+      final newPasswordState = Password.validated(
+        previousPasswordValue,
+      );
 
-    final newScreenState = previousScreenState.copyWith(
-      password: newPasswordState,
-    );
-    emit(newScreenState);
+      final newScreenState = previousScreenState.copyWith(
+        password: newPasswordState,
+      );
+      emit(newScreenState);
+    }
   }
 
   void onSubmit() async {
