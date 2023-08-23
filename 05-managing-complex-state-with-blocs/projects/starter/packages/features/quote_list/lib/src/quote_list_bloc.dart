@@ -22,12 +22,18 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
         ) {
     _registerEventHandler();
 
-    // TODO: Watch the user's authentication status.
+    _authChangesSubscription = userRepository.getUser().listen((user) {
+      _authenticatedUsername = user?.username;
+
+      add(
+        const QuoteListUsernameObtained(),
+      );
+    });
   }
 
   late final StreamSubscription _authChangesSubscription;
   String? _authenticatedUsername;
-  
+
   final QuoteRepository _quoteRepository;
 
   void _registerEventHandler() {
@@ -156,7 +162,7 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
 
   Future<void> _handleQuoteListItemFavoriteToggled(
     Emitter emitter,
-    QuoteListItemFavoriteToggled event,
+    QuoteListItemFavoritedToggled event,
   ) async {
     try {
       // The `favoriteQuote()` and `unfavoriteQuote()` functions return you the
@@ -240,7 +246,76 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
     );
   }
 
-  // TODO: Create a utility function that fetches a given page.
+  Stream<QuoteListState> _fetchQuotePage(
+    int page, {
+    required QuoteListPageFetchPolicy fetchPolicy,
+    bool isRefresh = false,
+  }) async* {
+    final currentlyAppliedFilter = state.filter;
 
-  // TODO: Dispose the auth changes subscription.
+    final isFilteringByFavorites =
+        currentlyAppliedFilter is QuoteListFilterByFavorites;
+
+    final isUserSignedIn = _authenticatedUsername != null;
+
+    if (isFilteringByFavorites && !isUserSignedIn) {
+      yield QuoteListState.noItemsFound(
+        filter: currentlyAppliedFilter,
+      );
+    } else {
+      final pageStream = _quoteRepository.getQuoteListPage(
+        page,
+        tag: currentlyAppliedFilter is QuoteListFilterByTag
+            ? currentlyAppliedFilter.tag
+            : null,
+        searchTerm: currentlyAppliedFilter is QuoteListFilterBySearchTerm
+            ? currentlyAppliedFilter.searchTerm
+            : '',
+        favoritedByUsername:
+            currentlyAppliedFilter is QuoteListFilterByFavorites
+                ? _authenticatedUsername
+                : null,
+        fetchPolicy: fetchPolicy,
+      );
+      try {
+        await for (final newPage in pageStream) {
+          final newItemList = newPage.quoteList;
+          final oldItemList = state.itemList ?? [];
+          final completeItemList = isRefresh || page == 1
+              ? newItemList
+              : (oldItemList + newItemList);
+
+          final nextPage = newPage.isLastPage ? null : page + 1;
+          yield QuoteListState.success(
+            nextPage: nextPage,
+            itemList: completeItemList,
+            filter: currentlyAppliedFilter,
+            isRefresh: isRefresh,
+          );
+        }
+      } catch (error) {
+        if (error is EmptySearchResultException) {
+          yield QuoteListState.noItemsFound(
+            filter: currentlyAppliedFilter,
+          );
+        }
+
+        if (isRefresh) {
+          yield state.copyWithNewRefreshError(
+            error,
+          );
+        } else {
+          yield state.copyWithNewError(
+            error,
+          );
+        }
+      }
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _authChangesSubscription.cancel();
+    return super.close();
+  }
 }
