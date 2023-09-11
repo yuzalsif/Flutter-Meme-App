@@ -81,7 +81,13 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
         nonDebounceEventStream,
         debounceEventStream,
       ]);
-      //TODO: Discard in-progress event if a new one comes in.
+
+      final restartableTranformer = restartable<QuoteListEvent>();
+
+      return restartableTranformer(
+        mergedEventStream,
+        eventHandler,
+      );
     });
   }
 
