@@ -11,7 +11,7 @@ class UserSecureStorage {
 
   final FlutterSecureStorage _secureStorage;
 
-  Future<void> upsertUserinfo({
+  Future<void> upsertUserInfo({
     required String username,
     required String email,
     String? token,

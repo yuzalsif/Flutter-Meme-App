@@ -24,8 +24,8 @@ class UserRepository {
   final UserSecureStorage _secureStorage;
   final BehaviorSubject<DarkModePreference> _darkModePreferenceSubject =
       BehaviorSubject();
-  
-  final BehaviorSubject<User> _userSubject = BehaviorSubject();
+
+  final BehaviorSubject<User?> _userSubject = BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
     await _localStorage.upsertDarkModePreference(
@@ -53,13 +53,15 @@ class UserRepository {
         password,
       );
 
-      await _secureStorage.upsertUserinfo(
+      await _secureStorage.upsertUserInfo(
         username: apiUser.username,
         email: apiUser.email,
         token: apiUser.token,
       );
 
-      //TODO: Propageate changes to the signed user
+      final domainUser = apiUser.toDomainModel();
+
+      _userSubject.add(domainUser);
     } on InvalidCredentialsFavQsException catch (_) {
       throw InvalidCredentialsException();
     }
