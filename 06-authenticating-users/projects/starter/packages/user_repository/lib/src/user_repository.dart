@@ -24,7 +24,8 @@ class UserRepository {
   final UserSecureStorage _secureStorage;
   final BehaviorSubject<DarkModePreference> _darkModePreferenceSubject =
       BehaviorSubject();
-  // TODO: Create a listenable property.
+  
+  final BehaviorSubject<User> _userSubject = BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
     await _localStorage.upsertDarkModePreference(
