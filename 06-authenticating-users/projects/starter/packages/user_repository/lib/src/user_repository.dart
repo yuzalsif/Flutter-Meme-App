@@ -68,11 +68,34 @@ class UserRepository {
   }
 
   Stream<User?> getUser() async* {
-    // TODO: Expose the BehaviorSubject.
+    if (!_userSubject.hasValue) {
+      final userInfo = await Future.wait([
+        _secureStorage.getUserEmail(),
+        _secureStorage.getUsername(),
+      ]);
+
+      final email = userInfo[0];
+      final username = userInfo[1];
+
+      if (email != null && username != null) {
+        _userSubject.add(
+          User(
+            username: username,
+            email: email,
+          ),
+        );
+      } else {
+        _userSubject.add(
+          null,
+        );
+      }
+    }
+
+    yield* _userSubject.stream;
   }
 
   Future<String?> getUserToken() async {
-    // TODO: Provide the user token.
+    return _secureStorage.getUserToken();
   }
 
   Future<void> signUp(
