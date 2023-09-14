@@ -46,7 +46,22 @@ class UserRepository {
   }
 
   Future<void> signIn(String email, String password) async {
-    // TODO: Sign in the user by coordinating the Data Sources.
+    try {
+      final apiUser = await remoteApi.signIn(
+        email,
+        password,
+      );
+
+      await _secureStorage.upsertUserinfo(
+        username: apiUser.username,
+        email: apiUser.email,
+        token: apiUser.token,
+      );
+
+      //TODO: Propageate changes to the signed user
+    } on InvalidCredentialsFavQsException catch (_) {
+      throw InvalidCredentialsException();
+    }
   }
 
   Stream<User?> getUser() async* {
