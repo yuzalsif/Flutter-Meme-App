@@ -9,7 +9,7 @@ import firebase_analytics
 import firebase_core
 import firebase_crashlytics
 import firebase_remote_config
-import path_provider_macos
+import path_provider_foundation
 import share_plus_macos
 import url_launcher_macos
 
